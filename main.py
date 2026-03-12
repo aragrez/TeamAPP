@@ -5,8 +5,10 @@ from datetime import date
 import secrets
 import json
 from database import SessionLocal, JugadorDB, SquadDB
+from passlib.context import CryptContext
 
 app = FastAPI()
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class Jugador(BaseModel):
     nombre_usuario: str
@@ -42,7 +44,7 @@ def calcular_edad(fecha_nacimiento: date) -> int:
 
 @app.get("/")
 def inicio():
-    return {"mensaje": "Bienvenido a Squad API"}
+    return {"mensaje": "Bienvenido a TeamApp"}
 
 @app.post("/jugadores")
 def crear_jugador(jugador: Jugador):
@@ -54,10 +56,11 @@ def crear_jugador(jugador: Jugador):
     if existe:
         db.close()
         raise HTTPException(status_code=400, detail="El email ya esta registrado")
+    contrasena_encriptada = pwd_context.hash(jugador.contrasena)
     nuevo = JugadorDB(
         nombre_usuario=jugador.nombre_usuario,
         email=jugador.email,
-        contrasena=jugador.contrasena,
+        contrasena=contrasena_encriptada,
         fecha_nacimiento=jugador.fecha_nacimiento,
         pais=jugador.pais,
         region=jugador.region,
@@ -67,7 +70,7 @@ def crear_jugador(jugador: Jugador):
     db.add(nuevo)
     db.commit()
     db.close()
-    return {"mensaje": "Jugador creado", "jugador": jugador}
+    return {"mensaje": "Jugador creado"}
 
 @app.get("/jugadores")
 def buscar_jugadores(
@@ -103,7 +106,7 @@ def login(datos: LoginData):
     db.close()
     if not jugador:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
-    if jugador.contrasena != datos.contrasena:
+    if not pwd_context.verify(datos.contrasena, jugador.contrasena):
         raise HTTPException(status_code=401, detail="Contrasena incorrecta")
     token = secrets.token_hex(16)
     sesiones_activas[token] = jugador.nombre_usuario
