@@ -8,6 +8,9 @@ from database import SessionLocal, JugadorDB, SquadDB
 from passlib.context import CryptContext
 
 app = FastAPI()
+app = FastAPI()
+from fastapi.staticfiles import StaticFiles
+app.mount("/static", StaticFiles(directory="static"), name="static")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class Jugador(BaseModel):
