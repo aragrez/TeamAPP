@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TeamApp — Buscar jugadores</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #fff; color: #111; }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+    nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3rem; }
+    .logo { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; text-decoration: none; }
+    .logo .team { color: #E85D20; }
+    .logo .app { color: #111; }
+    .btn { font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 7px 16px; border-radius: 8px; border: 0.5px solid #ddd; background: #fff; color: #111; cursor: pointer; font-weight: 500; text-decoration: none; }
+    .btn-primary { background: #E85D20; color: #fff; border-color: #E85D20; }
+    .btn-primary:hover { background: #CF4E15; }
+    h1 { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: -1px; margin-bottom: 6px; }
+    .sub { font-size: 15px; color: #666; margin-bottom: 2rem; }
+    .filters { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; margin-bottom: 2rem; align-items: end; }
+    .filter-group { display: flex; flex-direction: column; gap: 6px; }
+    .filter-label { font-size: 12px; font-weight: 500; color: #666; }
+    select { font-family: 'DM Sans', sans-serif; font-size: 14px; padding: 9px 12px; border-radius: 8px; border: 0.5px solid #ddd; background: #fff; color: #111; width: 100%; }
+    select:focus { outline: none; border-color: #E85D20; }
+    .results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .results-count { font-size: 13px; color: #666; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .card { background: #fff; border: 0.5px solid #eee; border-radius: 12px; padding: 1.25rem; transition: border-color 0.15s; }
+    .card:hover { border-color: #E85D20; }
+    .card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; background: #FEF0E9; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; color: #E85D20; flex-shrink: 0; }
+    .card-name { font-size: 14px; font-weight: 500; }
+    .card-country { font-size: 12px; color: #999; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .tag { font-size: 11px; padding: 3px 10px; border-radius: 99px; border: 0.5px solid #eee; color: #666; }
+    .tag-game { background: #F0F7FF; border-color: #C5DEFF; color: #1B6BC5; }
+    .tag-bajo { background: #F0FFF4; border-color: #B2ECC8; color: #1A7A3C; }
+    .tag-medio { background: #FFFBEB; border-color: #FCD97A; color: #8A6200; }
+    .tag-alto { background: #FEF0E9; border-color: #F5C4A0; color: #C04A10; }
+    .invite-btn { width: 100%; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 8px; border-radius: 8px; border: 0.5px solid #E85D20; background: #fff; color: #E85D20; cursor: pointer; }
+    .invite-btn:hover { background: #FEF0E9; }
+    .invite-btn.invited { background: #E85D20; color: #fff; border-color: #E85D20; }
+    .empty { text-align: center; padding: 3rem; color: #999; font-size: 14px; grid-column: 1/-1; }
+    .loading { text-align: center; padding: 3rem; color: #999; font-size: 14px; grid-column: 1/-1; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="/"><span class="team">Team</span><span class="app">App</span></a>
+      <div style="display:flex;gap:8px;">
+        <a class="btn" href="/">Inicio</a>
+        <a class="btn btn-primary" href="/static/registro.html">Registrarse</a>
+      </div>
+    </nav>
+
+    <h1>Encuentra tu squad</h1>
+    <p class="sub">Filtra jugadores por juego, región y nivel de habilidad.</p>
+
+    <div class="filters">
+      <div class="filter-group">
+        <label class="filter-label">Juego</label>
+        <select id="f-juego" onchange="filtrar()">
+          <option value="">Todos los juegos</option>
+          <option value="Fortnite">Fortnite</option>
+          <option value="Warzone">Warzone</option>
+          <option value="World of Warcraft">World of Warcraft</option>
+          <option value="League of Legends">League of Legends</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Región</label>
+        <select id="f-region" onchange="filtrar()">
+          <option value="">Todas las regiones</option>
+          <option value="norteamerica">Norteamérica</option>
+          <option value="sudamerica">Sudamérica</option>
+          <option value="centroamerica">Centroamérica</option>
+          <option value="europa">Europa</option>
+          <option value="asia">Asia</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Skill</label>
+        <select id="f-skill" onchange="filtrar()">
+          <option value="">Todos los niveles</option>
+          <option value="bajo">Bajo</option>
+          <option value="medio">Medio</option>
+          <option value="alto">Alto</option>
+        </select>
+      </div>
+      <button class="btn" onclick="limpiar()">Limpiar</button>
+    </div>
+
+    <div class="results-header">
+      <span class="results-count" id="count">Cargando jugadores...</span>
+    </div>
+
+    <div class="grid" id="grid">
+      <div class="loading">Cargando jugadores...</div>
+    </div>
+  </div>
+
+  <script>
+    let jugadores = [];
+
+    function iniciales(nombre) {
+      return nombre.slice(0, 2).toUpperCase();
+    }
+
+    function renderCard(j) {
+      return `
+        <div class="card">
+          <div class="card-top">
+            <div class="avatar">${iniciales(j.nombre_usuario)}</div>
+            <div>
+              <div class="card-name">${j.nombre_usuario}</div>
+              <div class="card-country">${j.pais}</div>
+            </div>
+          </div>
+          <div class="tags">
+            ${j.juegos.map(g => `<span class="tag tag-game">${g}</span>`).join('')}
+            <span class="tag tag-${j.skill}">${j.skill.charAt(0).toUpperCase() + j.skill.slice(1)}</span>
+          </div>
+          <button class="invite-btn" onclick="invitar(this)">Invitar al squad</button>
+        </div>
+      `;
+    }
+
+    async function cargar() {
+      try {
+        const res = await fetch('/jugadores');
+        jugadores = await res.json();
+        filtrar();
+      } catch (e) {
+        document.getElementById('grid').innerHTML = '<div class="empty">Error al cargar jugadores.</div>';
+      }
+    }
+
+    function filtrar() {
+      const juego = document.getElementById('f-juego').value;
+      const region = document.getElementById('f-region').value;
+      const skill = document.getElementById('f-skill').value;
+
+      let resultado = jugadores;
+      if (juego) resultado = resultado.filter(j => j.juegos.includes(juego));
+      if (region) resultado = resultado.filter(j => j.region === region);
+      if (skill) resultado = resultado.filter(j => j.skill === skill);
+
+      const grid = document.getElementById('grid');
+      const count = document.getElementById('count');
+
+      if (resultado.length === 0) {
+        grid.innerHTML = '<div class="empty">No se encontraron jugadores con esos filtros.</div>';
+        count.textContent = '0 jugadores encontrados';
+      } else {
+        grid.innerHTML = resultado.map(renderCard).join('');
+        count.textContent = `Mostrando ${resultado.length} jugador${resultado.length !== 1 ? 'es' : ''}`;
+      }
+    }
+
+    function limpiar() {
+      document.getElementById('f-juego').value = '';
+      document.getElementById('f-region').value = '';
+      document.getElementById('f-skill').value = '';
+      filtrar();
+    }
+
+    function invitar(btn) {
+      btn.textContent = '¡Invitación enviada!';
+      btn.classList.add('invited');
+      btn.disabled = true;
+    }
+
+    cargar();
+  </script>
+</body>
+</html>
