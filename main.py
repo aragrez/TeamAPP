@@ -170,7 +170,7 @@ def crear_squad(squad: Squad):
     db.refresh(nuevo)
     squad_id = nuevo.id
     db.close()
-    asyncio.create_task(crear_canal_discord(squad.nombre))
+    asyncio.run(crear_canal_discord(squad.nombre))
     return {"mensaje": "Squad creado", "squad_id": squad_id}
 
 @app.post("/squads/invitar")
