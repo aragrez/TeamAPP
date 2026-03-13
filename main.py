@@ -204,3 +204,32 @@ def listar_squads(juego: Optional[str] = Query(None)):
             "integrantes": json.loads(s.integrantes)
         })
     return resultados
+@app.get("/auth/google")
+async def login_google(request: Request):
+    redirect_uri = "https://teamapp.up.railway.app/auth/google/callback"
+    return await oauth.google.authorize_redirect(request, redirect_uri)
+
+@app.get("/auth/google/callback")
+async def auth_google_callback(request: Request):
+    token = await oauth.google.authorize_access_token(request)
+    user_info = token.get("userinfo")
+    if not user_info:
+        raise HTTPException(status_code=400, detail="No se pudo obtener información de Google")
+    db = SessionLocal()
+    jugador = db.query(JugadorDB).filter(JugadorDB.email == user_info["email"]).first()
+    if not jugador:
+        nuevo = JugadorDB(
+            nombre_usuario=user_info.get("name", "").replace(" ", "_").lower(),
+            email=user_info["email"],
+            contrasena="google_auth",
+            fecha_nacimiento="2000-01-01",
+            pais="",
+            region="",
+            juegos="[]",
+            skill="medio"
+        )
+        db.add(nuevo)
+        db.commit()
+    db.close()
+    return RedirectResponse(url="/static/buscar.html")
+
