@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TeamApp — Registro</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #fff; color: #111; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+    .wrap { width: 100%; max-width: 460px; }
+    .logo { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 2rem; text-decoration: none; display: block; }
+    .logo .team { color: #E85D20; }
+    .logo .app { color: #111; }
+    .card { background: #fff; border: 0.5px solid #eee; border-radius: 16px; padding: 2rem; }
+    .step { display: none; }
+    .step.active { display: block; }
+    .step-label { font-size: 12px; color: #999; margin-bottom: 1.25rem; }
+    .step-label span { color: #E85D20; font-weight: 500; }
+    .progress { display: flex; gap: 4px; margin-bottom: 1.5rem; }
+    .dot { height: 3px; border-radius: 99px; flex: 1; background: #eee; }
+    .dot.active { background: #E85D20; }
+    h2 { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 1.5rem; letter-spacing: -0.5px; }
+    .field { margin-bottom: 1rem; }
+    label { font-size: 13px; font-weight: 500; color: #666; display: block; margin-bottom: 6px; }
+    input, select { width: 100%; font-family: 'DM Sans', sans-serif; font-size: 14px; padding: 10px 12px; border-radius: 8px; border: 0.5px solid #ddd; background: #fff; color: #111; }
+    input:focus, select:focus { outline: none; border-color: #E85D20; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .games { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+    .game { font-size: 13px; padding: 6px 14px; border-radius: 99px; border: 0.5px solid #ddd; color: #666; cursor: pointer; user-select: none; }
+    .game.selected { border-color: #E85D20; color: #E85D20; background: #FEF0E9; }
+    .skill-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 6px; }
+    .skill-opt { border: 0.5px solid #ddd; border-radius: 8px; padding: 10px; text-align: center; cursor: pointer; }
+    .skill-opt.selected { border-color: #E85D20; background: #FEF0E9; }
+    .skill-name { font-size: 13px; font-weight: 500; }
+    .skill-desc { font-size: 11px; color: #999; margin-top: 2px; }
+    .btn { width: 100%; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; padding: 11px; border-radius: 8px; border: none; background: #E85D20; color: #fff; cursor: pointer; margin-top: 1.25rem; }
+    .btn:hover { background: #CF4E15; }
+    .btn-back { background: #f5f5f5; color: #111; margin-top: 8px; }
+    .btn-back:hover { background: #eee; }
+    .error { font-size: 13px; color: #E85D20; margin-top: 8px; display: none; }
+    .success { text-align: center; padding: 1rem 0; }
+    .success-icon { width: 56px; height: 56px; border-radius: 50%; background: #FEF0E9; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
+    .success-icon svg { width: 28px; height: 28px; stroke: #E85D20; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .success-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+    .success-sub { font-size: 14px; color: #666; margin-bottom: 1.5rem; }
+    .login-link { text-align: center; font-size: 13px; color: #666; margin-top: 1rem; }
+    .login-link a { color: #E85D20; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="logo" href="/"><span class="team">Team</span><span class="app">App</span></a>
+    <div class="card">
+      <div class="progress">
+        <div class="dot active" id="dot1"></div>
+        <div class="dot" id="dot2"></div>
+        <div class="dot" id="dot3"></div>
+      </div>
+
+      <div class="step active" id="step1">
+        <div class="step-label">Paso <span>1 de 3</span> — Datos personales</div>
+        <h2>Crea tu cuenta</h2>
+        <div class="field">
+          <label>Nombre de usuario</label>
+          <input type="text" id="username" placeholder="gamer_mx" />
+        </div>
+        <div class="field">
+          <label>Correo electrónico</label>
+          <input type="email" id="email" placeholder="correo@email.com" />
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Contraseña</label>
+            <input type="password" id="password" placeholder="••••••••" />
+          </div>
+          <div class="field">
+            <label>Fecha de nacimiento</label>
+            <input type="date" id="birthdate" />
+          </div>
+        </div>
+        <div class="error" id="error1">Por favor completa todos los campos.</div>
+        <button class="btn" onclick="goStep2()">Continuar</button>
+        <div class="login-link">¿Ya tienes cuenta? <a href="#">Inicia sesión</a></div>
+      </div>
+
+      <div class="step" id="step2">
+        <div class="step-label">Paso <span>2 de 3</span> — Tu región</div>
+        <h2>¿Desde dónde juegas?</h2>
+        <div class="field">
+          <label>País</label>
+          <input type="text" id="pais" placeholder="México" />
+        </div>
+        <div class="field">
+          <label>Región</label>
+          <select id="region">
+            <option value="">Selecciona tu región</option>
+            <option value="norteamerica">Norteamérica</option>
+            <option value="sudamerica">Sudamérica</option>
+            <option value="centroamerica">Centroamérica</option>
+            <option value="europa">Europa</option>
+            <option value="asia">Asia</option>
+          </select>
+        </div>
+        <div class="error" id="error2">Por favor completa todos los campos.</div>
+        <button class="btn" onclick="goStep3()">Continuar</button>
+        <button class="btn btn-back" onclick="goStep(1)">Atrás</button>
+      </div>
+
+      <div class="step" id="step3">
+        <div class="step-label">Paso <span>3 de 3</span> — Tu perfil gamer</div>
+        <h2>¿Cómo juegas?</h2>
+        <div class="field">
+          <label>Juegos favoritos</label>
+          <div class="games">
+            <div class="game" onclick="toggleGame(this)">Fortnite</div>
+            <div class="game" onclick="toggleGame(this)">Warzone</div>
+            <div class="game" onclick="toggleGame(this)">World of Warcraft</div>
+            <div class="game" onclick="toggleGame(this)">League of Legends</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Nivel de habilidad</label>
+          <div class="skill-grid">
+            <div class="skill-opt" onclick="selectSkill(this, 'bajo')">
+              <div class="skill-name">Bajo</div>
+              <div class="skill-desc">Estoy aprendiendo</div>
+            </div>
+            <div class="skill-opt" onclick="selectSkill(this, 'medio')">
+              <div class="skill-name">Medio</div>
+              <div class="skill-desc">Juego seguido</div>
+            </div>
+            <div class="skill-opt" onclick="selectSkill(this, 'alto')">
+              <div class="skill-name">Alto</div>
+              <div class="skill-desc">Soy competitivo</div>
+            </div>
+          </div>
+        </div>
+        <div class="error" id="error3">Selecciona al menos un juego y tu nivel.</div>
+        <button class="btn" onclick="registrar()">Crear mi cuenta</button>
+        <button class="btn btn-back" onclick="goStep(2)">Atrás</button>
+      </div>
+
+      <div class="step" id="step4">
+        <div class="success">
+          <div class="success-icon">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="success-title">¡Listo para jugar!</div>
+          <p class="success-sub">Tu cuenta fue creada. Ya puedes buscar tu squad perfecto.</p>
+          <button class="btn" onclick="window.location.href='/static/buscar.html'">Buscar jugadores</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let skill = '';
+
+    function goStep(n) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.getElementById('step' + n).classList.add('active');
+      document.querySelectorAll('.dot').forEach((d, i) => {
+        d.classList.toggle('active', i < n);
+      });
+    }
+
+    function goStep2() {
+      const u = document.getElementById('username').value;
+      const e = document.getElementById('email').value;
+      const p = document.getElementById('password').value;
+      const b = document.getElementById('birthdate').value;
+      if (!u || !e || !p || !b) {
+        document.getElementById('error1').style.display = 'block';
+        return;
+      }
+      document.getElementById('error1').style.display = 'none';
+      goStep(2);
+    }
+
+    function goStep3() {
+      const p = document.getElementById('pais').value;
+      const r = document.getElementById('region').value;
+      if (!p || !r) {
+        document.getElementById('error2').style.display = 'block';
+        return;
+      }
+      document.getElementById('error2').style.display = 'none';
+      goStep(3);
+    }
+
+    function toggleGame(el) {
+      el.classList.toggle('selected');
+    }
+
+    function selectSkill(el, val) {
+      document.querySelectorAll('.skill-opt').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      skill = val;
+    }
+
+    async function registrar() {
+      const juegos = [...document.querySelectorAll('.game.selected')].map(g => g.textContent);
+      if (juegos.length === 0 || !skill) {
+        document.getElementById('error3').style.display = 'block';
+        return;
+      }
+      document.getElementById('error3').style.display = 'none';
+
+      const data = {
+        nombre_usuario: document.getElementById('username').value,
+        email: document.getElementById('email').value,
+        contrasena: document.getElementById('password').value,
+        fecha_nacimiento: document.getElementById('birthdate').value,
+        pais: document.getElementById('pais').value,
+        region: document.getElementById('region').value,
+        juegos: juegos,
+        skill: skill
+      };
+
+      try {
+        const res = await fetch('/jugadores', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const json = await res.json();
+        if (res.ok) {
+          goStep(4);
+        } else {
+          document.getElementById('error3').textContent = json.detail || 'Error al registrarse.';
+          document.getElementById('error3').style.display = 'block';
+        }
+      } catch (e) {
+        document.getElementById('error3').textContent = 'Error de conexión.';
+        document.getElementById('error3').style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
