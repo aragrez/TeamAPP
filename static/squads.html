@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TeamApp — Squads</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600&family=Orbitron:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Rajdhani', sans-serif; background: #fff; color: #111; }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+    nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3rem; }
+    .logo .team { color: #E85D20; }
+    .logo .app { color: #111; }
+    .btn { font-family: 'Rajdhani', sans-serif; font-size: 13px; padding: 7px 16px; border-radius: 8px; border: 0.5px solid #ddd; background: #fff; color: #111; cursor: pointer; font-weight: 500; text-decoration: none; }
+    .btn-primary { background: #E85D20; color: #fff; border-color: #E85D20; }
+    .btn-primary:hover { background: #CF4E15; }
+    h1 { font-family: 'Orbitron', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: -1px; margin-bottom: 6px; }
+    .sub { font-size: 15px; color: #666; margin-bottom: 2rem; }
+    .filters { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-bottom: 2rem; align-items: end; }
+    .filter-group { display: flex; flex-direction: column; gap: 6px; }
+    .filter-label { font-size: 12px; font-weight: 500; color: #666; }
+    select { font-family: 'Rajdhani', sans-serif; font-size: 14px; padding: 9px 12px; border-radius: 8px; border: 0.5px solid #ddd; background: #fff; color: #111; width: 100%; }
+    select:focus { outline: none; border-color: #E85D20; }
+    .results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .results-count { font-size: 13px; color: #666; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .card { background: #fff; border: 0.5px solid #eee; border-radius: 12px; padding: 1.25rem; transition: border-color 0.15s; }
+    .card:hover { border-color: #E85D20; }
+    .card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; background: #FEF0E9; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-size: 15px; font-weight: 800; color: #E85D20; flex-shrink: 0; }
+    .card-name { font-size: 14px; font-weight: 600; }
+    .card-leader { font-size: 12px; color: #999; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .tag { font-size: 11px; padding: 3px 10px; border-radius: 99px; border: 0.5px solid #eee; color: #666; }
+    .tag-game { background: #F0F7FF; border-color: #C5DEFF; color: #1B6BC5; }
+    .tag-slots { background: #F0FFF4; border-color: #B2ECC8; color: #1A7A3C; }
+    .tag-full { background: #FEF0E9; border-color: #F5C4A0; color: #C04A10; }
+    .join-btn { width: 100%; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 500; padding: 8px; border-radius: 8px; border: 0.5px solid #E85D20; background: #fff; color: #E85D20; cursor: pointer; }
+    .join-btn:hover { background: #FEF0E9; }
+    .join-btn.joined { background: #E85D20; color: #fff; border-color: #E85D20; }
+    .empty { text-align: center; padding: 3rem; color: #999; font-size: 14px; grid-column: 1/-1; }
+    .loading { text-align: center; padding: 3rem; color: #999; font-size: 14px; grid-column: 1/-1; }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: #fff; border-radius: 16px; padding: 2rem; width: 100%; max-width: 420px; margin: 1rem; }
+    .modal h2 { font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 1.5rem; }
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 1rem; }
+    .field label { font-size: 12px; font-weight: 500; color: #666; }
+    .field input, .field select { font-family: 'Rajdhani', sans-serif; font-size: 14px; padding: 9px 12px; border-radius: 8px; border: 0.5px solid #ddd; background: #fff; color: #111; width: 100%; }
+    .field input:focus, .field select:focus { outline: none; border-color: #E85D20; }
+    .modal-actions { display: flex; gap: 8px; margin-top: 1.5rem; }
+    .modal-actions .btn { flex: 1; text-align: center; padding: 10px; font-size: 14px; }
+    .discord-badge { display: flex; align-items: center; gap: 8px; background: #5865F2; color: #fff; border-radius: 8px; padding: 8px 12px; font-size: 12px; margin-top: 8px; }
+    .discord-badge svg { flex-shrink: 0; }
+    @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } .filters { grid-template-columns: 1fr; } nav { flex-wrap: wrap; gap: 12px; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav>
+      <a href="/"><img src="/static/logo.png" alt="TeamApp" style="height:120px;object-fit:contain;" /></a>
+      <div style="display:flex;gap:8px;">
+        <a class="btn" href="/">Inicio</a>
+        <a class="btn" href="/static/buscar.html">Jugadores</a>
+        <a class="btn btn-primary" href="#" onclick="abrirModal()">+ Crear squad</a>
+      </div>
+    </nav>
+
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:6px;">
+      <h1>Squads activos</h1>
+    </div>
+    <p class="sub">Únete a un squad existente o crea el tuyo y genera un canal de Discord automáticamente.</p>
+
+    <div class="filters">
+      <div class="filter-group">
+        <label class="filter-label">Filtrar por juego</label>
+        <select id="f-juego" onchange="filtrar()">
+          <option value="">Todos los juegos</option>
+          <option value="Fortnite">Fortnite</option>
+          <option value="Warzone">Warzone</option>
+          <option value="World of Warcraft">World of Warcraft</option>
+          <option value="League of Legends">League of Legends</option>
+        </select>
+      </div>
+      <button class="btn" onclick="limpiar()">Limpiar</button>
+    </div>
+
+    <div class="results-header">
+      <span class="results-count" id="count">Cargando squads...</span>
+    </div>
+
+    <div class="grid" id="grid">
+      <div class="loading">Cargando squads...</div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <h2>Crear squad</h2>
+      <div class="field">
+        <label>Nombre del squad</label>
+        <input type="text" id="m-nombre" placeholder="Ej: Los Cracks" />
+      </div>
+      <div class="field">
+        <label>Juego</label>
+        <select id="m-juego">
+          <option value="Fortnite">Fortnite</option>
+          <option value="Warzone">Warzone</option>
+          <option value="World of Warcraft">World of Warcraft</option>
+          <option value="League of Legends">League of Legends</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Tu nombre de usuario</label>
+        <input type="text" id="m-lider" placeholder="Tu nombre de usuario en TeamApp" />
+      </div>
+      <div class="field">
+        <label>Máximo de integrantes</label>
+        <select id="m-max">
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4" selected>4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+        </select>
+      </div>
+      <div class="discord-badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Se creará un canal de texto y voz en Discord automáticamente
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="cerrarModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="crearSquad()">Crear squad</button>
+      </div>
+      <p id="modal-error" style="color:#E85D20;font-size:12px;margin-top:8px;display:none;"></p>
+    </div>
+  </div>
+
+  <script>
+    let squads = [];
+
+    function abrirModal() {
+      document.getElementById('modal').classList.add('open');
+    }
+
+    function cerrarModal() {
+      document.getElementById('modal').classList.remove('open');
+      document.getElementById('modal-error').style.display = 'none';
+    }
+
+    function iniciales(nombre) {
+      return nombre.slice(0, 2).toUpperCase();
+    }
+
+    function renderCard(s) {
+      const slots = s.max_integrantes - s.integrantes.length;
+      const slotClass = slots === 0 ? 'tag-full' : 'tag-slots';
+      const slotText = slots === 0 ? 'Completo' : `${slots} lugar${slots !== 1 ? 'es' : ''} libre${slots !== 1 ? 's' : ''}`;
+      return `
+        <div class="card">
+          <div class="card-top">
+            <div class="avatar">${iniciales(s.nombre)}</div>
+            <div>
+              <div class="card-name">${s.nombre}</div>
+              <div class="card-leader">Líder: ${s.lider}</div>
+            </div>
+          </div>
+          <div class="tags">
+            <span class="tag tag-game">${s.juego}</span>
+            <span class="tag ${slotClass}">${slotText}</span>
+          </div>
+          <button class="join-btn" onclick="unirse(this)" ${slots === 0 ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>
+            ${slots === 0 ? 'Squad completo' : 'Unirse al squad'}
+          </button>
+        </div>
+      `;
+    }
+
+    async function cargar() {
+      try {
+        const res = await fetch('/squads');
+        squads = await res.json();
+        filtrar();
+      } catch (e) {
+        document.getElementById('grid').innerHTML = '<div class="empty">Error al cargar squads.</div>';
+      }
+    }
+
+    function filtrar() {
+      const juego = document.getElementById('f-juego').value;
+      let resultado = squads;
+      if (juego) resultado = resultado.filter(s => s.juego === juego);
+
+      const grid = document.getElementById('grid');
+      const count = document.getElementById('count');
+
+      if (resultado.length === 0) {
+        grid.innerHTML = '<div class="empty">No hay squads activos. ¡Crea el primero!</div>';
+        count.textContent = '0 squads encontrados';
+      } else {
+        grid.innerHTML = resultado.map(renderCard).join('');
+        count.textContent = `Mostrando ${resultado.length} squad${resultado.length !== 1 ? 's' : ''}`;
+      }
+    }
+
+    function limpiar() {
+      document.getElementById('f-juego').value = '';
+      filtrar();
+    }
+
+    function unirse(btn) {
+      btn.textContent = '¡Te uniste!';
+      btn.classList.add('joined');
+      btn.disabled = true;
+    }
+
+    async function crearSquad() {
+      const nombre = document.getElementById('m-nombre').value.trim();
+      const juego = document.getElementById('m-juego').value;
+      const lider = document.getElementById('m-lider').value.trim();
+      const max = parseInt(document.getElementById('m-max').value);
+      const errorEl = document.getElementById('modal-error');
+
+      if (!nombre || !lider) {
+        errorEl.textContent = 'Completa todos los campos.';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      try {
+        const res = await fetch('/squads', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nombre, juego, lider, max_integrantes: max })
+        });
+
+        if (!res.ok) {
+          const data = await res.json();
+          errorEl.textContent = data.detail || 'Error al crear el squad.';
+          errorEl.style.display = 'block';
+          return;
+        }
+
+        cerrarModal();
+        document.getElementById('m-nombre').value = '';
+        document.getElementById('m-lider').value = '';
+        await cargar();
+      } catch (e) {
+        errorEl.textContent = 'Error de conexión.';
+        errorEl.style.display = 'block';
+      }
+    }
+
+    cargar();
+  </script>
+</body>
+</html>
