@@ -3,11 +3,29 @@ from pydantic import BaseModel
 from typing import List, Optional
 from datetime import date
 import secrets
+import os
+from authlib.integrations.starlette_client import OAuth
+from starlette.config import Config
+from starlette.middleware.sessions import SessionMiddleware
+from fastapi.responses import RedirectResponse
 import json
 from database import SessionLocal, JugadorDB, SquadDB
 from passlib.context import CryptContext
 
 app = FastAPI()
+app.add_middleware(SessionMiddleware, secret_key="teamapp-secret-key-2024")
+
+config = Config(environ={
+    "GOOGLE_CLIENT_ID": os.environ.get("GOOGLE_CLIENT_ID"),
+    "GOOGLE_CLIENT_SECRET": os.environ.get("GOOGLE_CLIENT_SECRET")
+})
+
+oauth = OAuth(config)
+oauth.register(
+    name="google",
+    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+    client_kwargs={"scope": "openid email profile"}
+)
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 app.mount("/static", StaticFiles(directory="static"), name="static")
