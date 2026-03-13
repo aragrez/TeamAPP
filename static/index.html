@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TeamApp — Encuentra tu squad</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #fff; color: #111; }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+    nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4rem; }
+    .logo { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; letter-spacing: -0.5px; text-decoration: none; }
+    .logo .team { color: #E85D20; }
+    .logo .app { color: #111; }
+    .nav-links { display: flex; gap: 24px; }
+    .nav-link { font-size: 14px; color: #666; text-decoration: none; cursor: pointer; }
+    .nav-link:hover { color: #111; }
+    .btn { font-family: 'DM Sans', sans-serif; font-size: 14px; padding: 8px 18px; border-radius: 8px; border: 0.5px solid #ddd; background: #fff; color: #111; cursor: pointer; font-weight: 500; text-decoration: none; }
+    .btn:hover { background: #f5f5f5; }
+    .btn-primary { background: #E85D20; color: #fff; border-color: #E85D20; }
+    .btn-primary:hover { background: #CF4E15; }
+    .hero { text-align: center; padding: 2rem 0 3rem; }
+    .badge { display: inline-block; font-size: 12px; font-weight: 500; padding: 4px 14px; border-radius: 99px; border: 0.5px solid #ddd; color: #666; margin-bottom: 1.5rem; }
+    h1 { font-family: 'Syne', sans-serif; font-size: 52px; font-weight: 800; line-height: 1.1; letter-spacing: -2px; margin-bottom: 1.25rem; }
+    h1 span { color: #E85D20; }
+    .hero-sub { font-size: 18px; color: #666; line-height: 1.6; max-width: 520px; margin: 0 auto 2rem; }
+    .ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 3rem 0; }
+    .stat { background: #f9f9f9; border-radius: 12px; padding: 1.25rem; text-align: center; }
+    .stat-num { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; }
+    .stat-label { font-size: 13px; color: #666; margin-top: 4px; }
+    .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 1rem 0 3rem; }
+    .feature { background: #fff; border: 0.5px solid #eee; border-radius: 12px; padding: 1.25rem; }
+    .feature-icon { width: 36px; height: 36px; border-radius: 8px; background: #FEF0E9; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+    .feature-icon svg { width: 18px; height: 18px; stroke: #E85D20; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .feature-title { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+    .feature-desc { font-size: 13px; color: #666; line-height: 1.5; }
+    .games { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 3rem; }
+    .game-tag { font-size: 13px; padding: 6px 14px; border-radius: 99px; border: 0.5px solid #ddd; color: #666; }
+    .cta-box { background: #f9f9f9; border-radius: 12px; padding: 2.5rem; text-align: center; }
+    .cta-title { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; letter-spacing: -1px; margin-bottom: 0.75rem; }
+    .cta-sub { font-size: 15px; color: #666; margin-bottom: 1.5rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="/"><span class="team">Team</span><span class="app">App</span></a>
+      <div class="nav-links">
+        <a class="nav-link" href="/static/buscar.html">Buscar jugadores</a>
+        <a class="nav-link" href="/docs">API</a>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <a class="btn" href="/static/registro.html">Iniciar sesión</a>
+        <a class="btn btn-primary" href="/static/registro.html">Registrarse</a>
+      </div>
+    </nav>
+
+    <div class="hero">
+      <div class="badge">Ahora en beta pública</div>
+      <h1>Encuentra tu<br><span>squad perfecto</span></h1>
+      <p class="hero-sub">Conectamos jugadores por edad, skill y región para que el ping nunca arruine tu partida.</p>
+      <div class="ctas">
+        <a class="btn btn-primary" href="/static/registro.html">Empezar gratis</a>
+        <a class="btn" href="/static/buscar.html">Buscar jugadores</a>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num">4</div><div class="stat-label">Juegos disponibles</div></div>
+      <div class="stat"><div class="stat-num">3</div><div class="stat-label">Niveles de skill</div></div>
+      <div class="stat"><div class="stat-num">0ms</div><div class="stat-label">Lag con tu squad</div></div>
+    </div>
+
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="feature-title">Squads inteligentes</div>
+        <div class="feature-desc">Forma grupos de hasta 4 jugadores compatibles en segundos.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <div class="feature-title">Filtro por región</div>
+        <div class="feature-desc">Jugadores cercanos = mejor ping. Siempre.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <div class="feature-title">Match por skill</div>
+        <div class="feature-desc">Bajo, medio o alto — siempre con alguien de tu nivel.</div>
+      </div>
+    </div>
+
+    <div class="games">
+      <span class="game-tag">Fortnite</span>
+      <span class="game-tag">Warzone</span>
+      <span class="game-tag">World of Warcraft</span>
+      <span class="game-tag">League of Legends</span>
+      <span class="game-tag">+ más próximamente</span>
+    </div>
+
+    <div class="cta-box">
+      <div class="cta-title">¿Listo para jugar en equipo?</div>
+      <div class="cta-sub">Registro gratuito. Sin tarjeta de crédito.</div>
+      <a class="btn btn-primary" href="/static/registro.html">Crear mi cuenta</a>
+    </div>
+  </div>
+</body>
+</html>
