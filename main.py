@@ -13,10 +13,14 @@ from fastapi.responses import FileResponse
 app.mount("/static", StaticFiles(directory="static"), name="static")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+@app.get("/")
+def inicio():
+    return FileResponse("static/index.html")
+
 @app.get("/home")
 def home():
     return FileResponse("static/index.html")
-    
+
 class Jugador(BaseModel):
     nombre_usuario: str
     email: str
