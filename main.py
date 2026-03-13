@@ -4,6 +4,28 @@ from typing import List, Optional
 from datetime import date
 import secrets
 import os
+import discord
+from discord.ext import commands
+import asyncio
+import threading
+
+DISCORD_BOT_TOKEN = os.environ.get("DISCORD_BOT_TOKEN", "")
+DISCORD_SERVER_ID = int(os.environ.get("DISCORD_SERVER_ID", "0"))
+
+intents = discord.Intents.default()
+bot = discord.Client(intents=intents)
+
+def run_bot():
+    asyncio.run(bot.start(DISCORD_BOT_TOKEN))
+
+threading.Thread(target=run_bot, daemon=True).start()
+
+async def crear_canal_discord(nombre_squad: str):
+    await bot.wait_until_ready()
+    guild = bot.get_guild(DISCORD_SERVER_ID)
+    if guild:
+        await guild.create_text_channel(f"squad-{nombre_squad.lower().replace(' ', '-')}")
+        await guild.create_voice_channel(f"🎮 {nombre_squad}")
 from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
 from starlette.middleware.sessions import SessionMiddleware
@@ -160,6 +182,7 @@ def crear_squad(squad: Squad):
     db.refresh(nuevo)
     squad_id = nuevo.id
     db.close()
+    asyncio.run_coroutine_threadsafe(crear_canal_discord(squad.nombre), bot.loop)
     return {"mensaje": "Squad creado", "squad_id": squad_id}
 
 @app.post("/squads/invitar")
